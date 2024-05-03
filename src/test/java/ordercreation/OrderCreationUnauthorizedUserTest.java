@@ -1,5 +1,6 @@
 package ordercreation;
 
+import ingredients.Recipe;
 import org.junit.Test;
 import io.qameta.allure.junit4.DisplayName;
 import client.ClientOrder;
@@ -12,14 +13,12 @@ import static org.hamcrest.CoreMatchers.notNullValue;
 public class OrderCreationUnauthorizedUserTest {
     public static final String EM_ID = "Ingredient ids must be provided";
     private final ClientOrder clientOrder = new ClientOrder();
+    private final Recipe recipe = new Recipe();
 
     @Test
     @DisplayName("Create order with unauthorized user test")
     public void createOrderNoAuthUserTest() {
-        Map<String, String[]> ingredients = new HashMap<>();
-        ingredients.put("ingredients", new String[]{"61c0c5a71d1f82001bdaaa6d",
-                "61c0c5a71d1f82001bdaaa70",
-                "61c0c5a71d1f82001bdaaa73"});
+        Map<String, String[]> ingredients = recipe.getCorrectIngredients();
         Response response = clientOrder.createOrderNoAuthUser(ingredients);
         response.then().statusCode(200).body("success", equalTo(true)).body("order", notNullValue());
     }
@@ -35,7 +34,7 @@ public class OrderCreationUnauthorizedUserTest {
     @Test
     @DisplayName("Create order with unauthorized user with wrong ingredient's hash test")
     public void createOrderNoAuthUserWrongHashTest() {
-        Map<String, String[]> ingredients = new HashMap<>();
+        Map<String, String[]> ingredients = recipe.getIncorrectIngredients();
         ingredients.put("ingredients", new String[]{"12345"});
         Response response = clientOrder.createOrderNoAuthUser(ingredients);
         response.then().statusCode(500);

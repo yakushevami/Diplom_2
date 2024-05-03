@@ -1,5 +1,6 @@
 package ordercreation;
 
+import ingredients.Recipe;
 import org.junit.Test;
 import io.qameta.allure.junit4.DisplayName;
 import client.ClientOrder;
@@ -10,17 +11,15 @@ import io.restassured.response.Response;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.notNullValue;
 
-public class OrderCreationAuthorizedUser extends CreateAndDeleteUser {
+public class OrderCreationAuthorizedUserTest extends CreateAndDeleteUser {
     public static final String EM_ID = "Ingredient ids must be provided";
     private final ClientOrder clientOrder = new ClientOrder();
+    private final Recipe recipe = new Recipe();
 
     @Test
     @DisplayName("Create order with authorized user test")
     public void createOrderAuthUserTest() {
-        Map<String, String[]> ingredients = new HashMap<>();
-            ingredients.put("ingredients", new String[]{"61c0c5a71d1f82001bdaaa6d",
-                                                        "61c0c5a71d1f82001bdaaa70",
-                                                        "61c0c5a71d1f82001bdaaa73"});
+        Map<String, String[]> ingredients = recipe.getCorrectIngredients();
         Response response = clientOrder.createOrderAuthUser(ingredients, accessToken);
         response.then().statusCode(200).body("success", equalTo(true)).body("order", notNullValue());
     }
@@ -36,8 +35,7 @@ public class OrderCreationAuthorizedUser extends CreateAndDeleteUser {
     @Test
     @DisplayName("Create order with authorized user with wrong ingredient's hash test")
     public void createOrderAuthUserWrongHashTest() {
-        Map<String, String[]> ingredients = new HashMap<>();
-            ingredients.put("ingredients", new String[]{"12345"});
+        Map<String, String[]> ingredients = recipe.getIncorrectIngredients();
         Response response = clientOrder.createOrderAuthUser(ingredients, accessToken);
         response.then().statusCode(500);
     }
