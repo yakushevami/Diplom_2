@@ -2,24 +2,24 @@ package client;
 
 import io.qameta.allure.Step;
 import io.restassured.response.Response;
-import java.util.Map;
+import ingredients.Order;
 
 public class ClientOrder extends Client {
     public static final String AUTH_HEADER = "authorization";
     private static final String ORDERS = "/orders";
 
     @Step("Create order with authorized user")
-    public Response createOrderAuthUser(Map<String, String[]> ingredients, String accessToken) {
+    public Response createOrderAuthUser(Order order, String accessToken) {
         return getSpec()
                 .header(AUTH_HEADER, accessToken)
-                .body(ingredients)
+                .body(order)
                 .post(ORDERS);
     }
 
     @Step("Create order with unauthorized user")
-    public Response createOrderNoAuthUser(Map<String, String[]> ingredients) {
+    public Response createOrderNoAuthUser(Order order) {
         return getSpec()
-                .body(ingredients)
+                .body(order)
                 .post(ORDERS);
     }
 
